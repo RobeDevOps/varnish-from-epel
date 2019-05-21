@@ -1,0 +1,55 @@
+---
+- name: Install epel-release
+  yum:
+    name: epel-release 
+    state: present
+    update_cache: yes
+
+- name: Install varnish
+  yum:
+    name: varnish
+    state: present
+
+- name: Create varnish directory
+  file:
+    path: "{{ varnish_home }}"
+    state: directory
+
+- name: Set default file configuration
+  template:
+    src: "default.vcl.j2"
+    dest: "{{ varnish_home }}/default.vcl"
+  notify: restart varnish
+  tags: ['config']
+
+- name: Set varnish params 
+  template:
+    src: varnish.params.j2
+    dest: "{{ varnish_home }}/varnish.params"
+  notify: restart varnish
+  tags: ['config']
+
+- name: Create varnish service
+  template:
+    src: varnish.service.j2
+    dest: /etc/systemd/system/varnish.service
+  notify: restart varnish
+  tags: ['config']
+
+- name: Start varnish
+  systemd:
+    name: varnish
+    state: started
+
+- name: Check varnish availability
+  uri:
+    url: "http://{{ varnish_listen_address }}:{{ varnish_listen_port }}"
+    method: GET
+    validate_certs: False
+    status_code: 503
+    body_format: json
+  register: varnish_result
+  retries: 3
+  delay: 10
+  until: varnish_result is not failed
+  tags: ['availability']

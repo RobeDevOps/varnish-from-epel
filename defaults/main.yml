@@ -1,0 +1,18 @@
+---
+varnish_vcl_version: 4.0
+varnish_home: /etc/varnish
+varnish_vcl_config: default.vcl
+
+# # default address and port bind
+varnish_listen_address: "{{ hostvars['varnish']['ansible_default_ipv4']['address'] }}"
+varnish_listen_port: 6081
+
+# # Admin interface listen address and port
+varnish_admin_listen_address: 127.0.0.1
+varnish_admin_listen_port: 6082
+
+#varnish parametes
+varnish_secret_file: secret
+varnish_storage: "malloc,256M"
+varnish_user: varnish
+varnish_group: varnish
