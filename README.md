@@ -57,6 +57,13 @@ Dependencies
 
 N/A
 
+Install role
+---------------
+
+```bash
+ansible-galaxy install robedevops.varnish_from_epel
+```
+
 Example Playbook
 ----------------
 
@@ -67,7 +74,7 @@ Including an example of how to use your role (for instance, with variables passe
   gather_facts: yes
   become: yes
   roles:
-      - { role: rodebdevops.varnish_from_epel }
+      - { role: robedevops.varnish_from_epel }
 ```
 
 Example of inventory
@@ -84,6 +91,25 @@ ansible_user=centos
 ansible_ssh_common_args='-o StrictHostKeyChecking=no'
 ansible_ssh_private_key_file=/path/to/key.pem
 ```
+
+Extra tips
+-----------------------
+
+It is possible to check is varnish is available hitting the varnish endpoint url. This role contains a tag **availability** and it can be used to check 3 times with a delay of 10 seconds between each.
+
+```
+ansible-playbook varnish.yml -i varnish.ini -v --tags=availability
+```
+
+Then you will get an output such this if endpoint is not available.
+
+```
+FAILED - RETRYING: Check varnish availability (3 retries left).
+FAILED - RETRYING: Check varnish availability (2 retries left).
+FAILED - RETRYING: Check varnish availability (1 retries left).
+fatal: [varnish]: FAILED! => {"attempts": 3, "changed": false, "content": "", "msg": "Status code was -1 and not [503]: Request failed: <urlopen error [Errno 111] Connection refused>", "redirected": false, "status": -1, "url": "http://varnish_listen_address:varnish_listen_port"}
+```
+
 
 License
 -------
