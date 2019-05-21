@@ -1,7 +1,7 @@
 ---
 - name: Install epel-release
   yum:
-    name: epel-release 
+    name: epel-release
     state: present
     update_cache: yes
 
@@ -22,7 +22,7 @@
   notify: restart varnish
   tags: ['config']
 
-- name: Set varnish params 
+- name: Set varnish params
   template:
     src: varnish.params.j2
     dest: "{{ varnish_home }}/varnish.params"
